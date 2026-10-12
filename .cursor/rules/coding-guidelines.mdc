@@ -1,0 +1,54 @@
+---
+description: General coding guidelines for UI quality, function/file size, and maintainable show-off code
+alwaysApply: true
+---
+
+# General Coding Guidelines
+
+Prioritize clarity and maintainability. Code should read like a polished demo: obvious intent, best practices, no cleverness.
+
+## Frontend: designer-made, readable, accessible
+
+- Layouts need clear hierarchy, consistent spacing, and obvious visual grouping — not default browser chrome.
+- Buttons must look and feel intentional: sufficient size, contrast, hover/focus/disabled states, and a visible focus ring.
+- Backgrounds and surfaces must support readable text (contrast), not compete with content.
+- Prefer semantic HTML and accessible names (`button`, `label`, `aria-*` only when native semantics are not enough).
+- Interactive targets should be easy to scan and hit; avoid cramped, low-contrast, or unlabeled controls.
+
+```html
+<!-- BAD: tiny, low-contrast, no focus style -->
+<div onclick="save()">ok</div>
+
+<!-- GOOD: semantic, labeled, focusable, high contrast -->
+<button type="submit" class="btn-primary">Save changes</button>
+```
+
+## Functions: clear, single-purpose, under 50 lines
+
+- One function does one thing. Name it after that thing.
+- Extract helpers instead of nesting unrelated steps.
+- Prefer early returns over deep `if` pyramids.
+
+```ts
+// BAD: mixed concerns, hard to scan
+function handleSubmit(form) { /* validate + api + toast + navigate... */ }
+
+// GOOD: each step is a named unit
+function handleSubmit(form: FormState) {
+  const data = parseForm(form);
+  const errors = validateOrder(data);
+  if (errors) return showErrors(errors);
+  return submitOrder(data);
+}
+```
+
+## Files: under 300 lines
+
+- Split by responsibility (UI vs data vs helpers), not by dumping more into the same file.
+- Colocate closely related pieces; do not create kitchen-sink modules.
+
+## Readability over cleverness
+
+- Explicit names, straightforward control flow, no unexplained magic numbers or one-letter identifiers.
+- Follow language/framework conventions already in the repo.
+- If a change fights these limits, refactor first — do not grow functions or files "just this once."
